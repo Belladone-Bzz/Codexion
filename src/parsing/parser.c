@@ -1,92 +1,84 @@
 #include "codexion.h"
 
-int	parse_number(const char *str, int *value)
+void	print_error_parsing(t_error_parsing error)
+{
+	if (error == INVALID_NUMBER_ERR)
+		fprintf(stderr, "Error: numeric arguments must contain digits only.\n");
+	else if (error == NUMBER_OVERFLOW_ERR)
+		fprintf(stderr, "Error: numeric argument exceeds INT_MAX.\n");
+	else if (error == INVALID_SCHEDULER_ERR)
+		fprintf(stderr, "Error: scheduler must be <fifo> or <edf>.\n");
+	else if (error == INVALID_CONFIG_ERR)
+		fprintf(stderr, "Error: invalid configuration. number_of_coders"
+			" must be between 1 and 10000, and timing and compilation arguments"
+			" must be >= 0.\n");
+	else if (error == INVALID_ARGS_NUMBER)
+		fprintf(stderr, "Error: invalid argument count.\n");
+}
+
+t_error_parsing	parse_number(const char *str, int *value)
 {
 	int		index;
 	int		digit;
 	int		result;
 
 	if (str == NULL || *str == '\0' || value == NULL)
-	{
-		fprintf(stderr, "Argument error: empty numeric argument.\n");
-		return (1);
-	}
+		return (INVALID_NUMBER_ERR);
 	index = 0;
 	result = 0;
 	while (str[index] != '\0')
 	{
 		if (str[index] < '0' || str[index] > '9')
-		{
-			fprintf(stderr, "Argument error: you must only provide digit"
-				" characters.\n");
-			return (1);
-		}
+			return (INVALID_NUMBER_ERR);
 		digit = str[index] - '0';
 		if (result > INT_MAX / 10
 			|| (result == INT_MAX / 10 && digit > INT_MAX % 10))
-		{
-			fprintf(stderr, "Argument error: numeric argument exceeds"
-				" INT_MAX.\n");
-			return (1);
-		}
+			return (NUMBER_OVERFLOW_ERR);
 		result = result * 10 + digit;
 		index++;
 	}
 	*value = result;
-	return (0);
+	return (NO_ERR);
 }
 
-int	parse_scheduler(const char *str, t_scheduler *scheduler)
+t_error_parsing	parse_scheduler(const char *str, t_scheduler *scheduler)
 {
 	if (str == NULL || *str == '\0' || scheduler == NULL)
-	{
-		fprintf(stderr, "Argument error: empty scheduler argument.\n");
-		return (1);
-	}
+		return (INVALID_SCHEDULER_ERR);
 	if (strcmp(str, "fifo") == 0)
 	{
 		*scheduler = SCHED_POLICY_FIFO;
-		return (0);
+		return (NO_ERR);
 	}
 	if (strcmp(str, "edf") == 0)
 	{
 		*scheduler = SCHED_POLICY_EDF;
-		return (0);
+		return (NO_ERR);
 	}
-	fprintf(stderr, "Argument error: your scheduler can only be <fifo> "
-		"or <edf>.\n");
-	return (1);
+	return (INVALID_SCHEDULER_ERR);
 }
 
-int	validate_config(t_config *config)
+t_error_parsing	validate_config(t_config *config)
 {
+	if (config == NULL)
+		return (INVALID_CONFIG_ERR);
 	if (config->number_of_coders < 1 || config->number_of_coders > 10000)
-	{
-		fprintf(stderr, "Validation error: number_of_coders must be between"
-			"1 and 10000.\n");
-		return (1);
-	}
+		return (INVALID_CONFIG_ERR);
 	if (config->time_to_burnout < 0 || config->time_to_compile < 0
 		|| config->time_to_debug < 0 || config->time_to_refactor < 0
 		|| config->compiles_required < 0 || config->dongle_cooldown < 0)
-	{
-		fprintf(stderr, "Validation error: timing and compilation "
-			"arguments must be >= 0.\n");
-		return (1);
-	}
-	return (0);
+		return (INVALID_CONFIG_ERR);
+	return (NO_ERR);
 }
 
-int	parse_args(int argc, char **argv, t_config *config)
+t_error_parsing	parse_args(int argc, char **argv, t_config *config)
 {
-	int		*values[7];
-	int		index;
+	int				*values[7];
+	int				index;
+	t_error_parsing	error;
 
 	if (argc != 9 || argv == NULL || config == NULL)
-	{
-		fprintf(stderr, "Argument error: invalid argument count.\n");
-		return (1);
-	}
+		return (INVALID_ARGS_NUMBER);
 	values[0] = &config->number_of_coders;
 	values[1] = &config->time_to_burnout;
 	values[2] = &config->time_to_compile;
@@ -97,11 +89,13 @@ int	parse_args(int argc, char **argv, t_config *config)
 	index = 0;
 	while (index < 7)
 	{
-		if (parse_number(argv[index + 1], values[index]) != 0)
-			return (1);
+		error = parse_number(argv[index + 1], values[index]);
+		if (error != NO_ERR)
+			return (error);
 		index++;
 	}
-	if (parse_scheduler(argv[8], &config->scheduler) != 0)
-		return (1);
-	return (0);
+	error = parse_scheduler(argv[8], &config->scheduler);
+	if (error != NO_ERR)
+		return (error);
+	return (validate_config(config));
 }
