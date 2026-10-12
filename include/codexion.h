@@ -5,6 +5,8 @@
 # include <limits.h>
 # include <string.h>
 # include <stdio.h>
+# include <time.h>
+# include <unistd.h>
 
 typedef enum e_error_parsing
 {
@@ -39,5 +41,7 @@ t_error_parsing		parse_scheduler(const char *str, t_scheduler *scheduler);
 t_error_parsing		validate_config(t_config *config);
 t_error_parsing		parse_args(int argc, char **argv, t_config *config);
 void				print_error_parsing(t_error_parsing error);
+long				get_time_ms(void);
+void				sleep_ms(long duration);
 
 #endif
