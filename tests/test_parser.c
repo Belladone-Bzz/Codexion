@@ -1,14 +1,14 @@
 #include "codexion.h"
 
 int	test_number(const char *str, int expected_value,
-	t_error_parsing expected_result)
+	t_error expected_result)
 {
 	int					value;
-	t_error_parsing		result;
+	t_error		result;
 
 	value = -1;
 	result = parse_number(str, &value);
-	if (result != (t_error_parsing)expected_result)
+	if (result != (t_error)expected_result)
 	{
 		printf("FAIL: parse_number(\"%s\") returned %d, expected %d\n",
 			str, result, expected_result);
@@ -24,10 +24,10 @@ int	test_number(const char *str, int expected_value,
 }
 
 int	test_scheduler(const char *str, t_scheduler expected,
-	t_error_parsing expected_result)
+	t_error expected_result)
 {
 	t_scheduler			scheduler;
-	t_error_parsing		result;
+	t_error		result;
 
 	scheduler = -1;
 	result = parse_scheduler(str, &scheduler);
@@ -45,10 +45,10 @@ int	test_scheduler(const char *str, t_scheduler expected,
 	return (0);
 }
 
-int	test_parse_args(int argc, char **argv, t_error_parsing expected_result)
+int	test_parse_args(int argc, char **argv, t_error expected_result)
 {
 	t_config			config;
-	t_error_parsing		result;
+	t_error		result;
 
 	result = parse_args(argc, argv, &config);
 	if (result != expected_result)
@@ -74,7 +74,7 @@ int	test_valid_args(void)
 		"fifo"
 	};
 	t_config			config;
-	t_error_parsing		result;
+	t_error		result;
 
 	result = parse_args(9, argv, &config);
 	if (result != NO_ERR)

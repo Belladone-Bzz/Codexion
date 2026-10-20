@@ -7,16 +7,18 @@
 # include <stdio.h>
 # include <time.h>
 # include <unistd.h>
+# include <stdlib.h>
 
-typedef enum e_error_parsing
+typedef enum e_error
 {
 	NO_ERR,
+	MALLOC_ERR,
 	INVALID_ARGS_NUMBER,
 	INVALID_NUMBER_ERR,
 	NUMBER_OVERFLOW_ERR,
 	INVALID_SCHEDULER_ERR,
 	INVALID_CONFIG_ERR
-}	t_error_parsing;
+}	t_error;
 
 typedef enum e_dongle_flag
 {
@@ -75,12 +77,16 @@ typedef struct s_simulation
 }	t_simulation;
 
 
-t_error_parsing		parse_number(const char *str, int *value);
-t_error_parsing		parse_scheduler(const char *str, t_scheduler *scheduler);
-t_error_parsing		validate_config(t_config *config);
-t_error_parsing		parse_args(int argc, char **argv, t_config *config);
-void				print_error_parsing(t_error_parsing error);
-long				get_time_ms(void);
-void				sleep_ms(long duration);
+t_error		parse_number(const char *str, int *value);
+t_error		parse_scheduler(const char *str, t_scheduler *scheduler);
+t_error		validate_config(t_config *config);
+t_error		parse_args(int argc, char **argv, t_config *config);
+void		print_error(t_error error);
+long		get_time_ms(void);
+void		sleep_ms(long duration);
+t_error		init_simulation(t_simulation *simulation, t_config *config);
+void		init_dongles(t_simulation *simulation);
+void		init_coders(t_simulation *simulation);
+void		free_simulation(t_simulation *simulation);
 
 #endif

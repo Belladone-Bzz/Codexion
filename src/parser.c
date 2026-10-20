@@ -1,22 +1,6 @@
 #include "codexion.h"
 
-void	print_error_parsing(t_error_parsing error)
-{
-	if (error == INVALID_NUMBER_ERR)
-		fprintf(stderr, "Error: numeric arguments must contain digits only.\n");
-	else if (error == NUMBER_OVERFLOW_ERR)
-		fprintf(stderr, "Error: numeric argument exceeds INT_MAX.\n");
-	else if (error == INVALID_SCHEDULER_ERR)
-		fprintf(stderr, "Error: scheduler must be <fifo> or <edf>.\n");
-	else if (error == INVALID_CONFIG_ERR)
-		fprintf(stderr, "Error: invalid configuration. number_of_coders"
-			" must be between 1 and 10000, and timing and compilation arguments"
-			" must be >= 0.\n");
-	else if (error == INVALID_ARGS_NUMBER)
-		fprintf(stderr, "Error: invalid argument count.\n");
-}
-
-t_error_parsing	parse_number(const char *str, int *value)
+t_error	parse_number(const char *str, int *value)
 {
 	int		index;
 	int		digit;
@@ -41,7 +25,7 @@ t_error_parsing	parse_number(const char *str, int *value)
 	return (NO_ERR);
 }
 
-t_error_parsing	parse_scheduler(const char *str, t_scheduler *scheduler)
+t_error	parse_scheduler(const char *str, t_scheduler *scheduler)
 {
 	if (str == NULL || *str == '\0' || scheduler == NULL)
 		return (INVALID_SCHEDULER_ERR);
@@ -58,7 +42,7 @@ t_error_parsing	parse_scheduler(const char *str, t_scheduler *scheduler)
 	return (INVALID_SCHEDULER_ERR);
 }
 
-t_error_parsing	validate_config(t_config *config)
+t_error	validate_config(t_config *config)
 {
 	if (config == NULL)
 		return (INVALID_CONFIG_ERR);
@@ -71,11 +55,11 @@ t_error_parsing	validate_config(t_config *config)
 	return (NO_ERR);
 }
 
-t_error_parsing	parse_args(int argc, char **argv, t_config *config)
+t_error	parse_args(int argc, char **argv, t_config *config)
 {
 	int				*values[7];
 	int				index;
-	t_error_parsing	error;
+	t_error	error;
 
 	if (argc != 9 || argv == NULL || config == NULL)
 		return (INVALID_ARGS_NUMBER);
