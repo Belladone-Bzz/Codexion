@@ -34,6 +34,20 @@ int	test_single_coder(void)
 		free_simulation(&sim);
 		return (1);
 	}
+	if (pthread_mutex_lock(&sim.dongles[0].mutex) != 0)
+	{
+		printf("FAIL: mutex lock.\n");
+		free_simulation(&sim);
+		return (1);
+	}
+	else
+	{
+		if (pthread_mutex_unlock(&sim.dongles[0].mutex) != 0)
+		{
+			printf("FAIL: mutex unlock.\n");
+			return (1);
+		}
+	}
 	if (sim.coders == NULL || sim.dongles == NULL)
 	{
 		printf("FAIL: null arrays\n");
@@ -122,6 +136,20 @@ int	test_four_coders(void)
 			printf("FAIL: dongle links\n");
 			free_simulation(&sim);
 			return (1);
+		}
+		if (pthread_mutex_lock(&sim.dongles[index].mutex) != 0)
+		{
+			printf("FAIL: mutex lock.\n");
+			free_simulation(&sim);
+			return (1);
+		}
+		else
+		{
+			if (pthread_mutex_unlock(&sim.dongles[index].mutex) != 0)
+			{
+				printf("FAIL: mutex unlock.\n");
+				return (1);
+			}
 		}
 		index++;
 	}
