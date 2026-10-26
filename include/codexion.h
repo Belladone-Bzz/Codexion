@@ -8,6 +8,7 @@
 # include <time.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <pthread.h>
 
 typedef enum e_error
 {
@@ -17,7 +18,8 @@ typedef enum e_error
 	INVALID_NUMBER_ERR,
 	NUMBER_OVERFLOW_ERR,
 	INVALID_SCHEDULER_ERR,
-	INVALID_CONFIG_ERR
+	INVALID_CONFIG_ERR,
+	MUTEX_INIT_ERR
 }	t_error;
 
 typedef enum e_dongle_flag
@@ -56,6 +58,7 @@ typedef struct s_dongle
 {
 	t_dongle_flag		is_dispo;
 	long				available_at_ms;
+	pthread_mutex_t		mutex;
 }	t_dongle;
 
 typedef struct s_coder
@@ -74,6 +77,7 @@ typedef struct s_simulation
 	t_coder			*coders;
 	t_dongle		*dongles;
 	long			simulation_start;
+	int				dongle_mutexes_initialized;
 }	t_simulation;
 
 
@@ -85,7 +89,7 @@ void		print_error(t_error error);
 long		get_time_ms(void);
 void		sleep_ms(long duration);
 t_error		init_simulation(t_simulation *simulation, t_config *config);
-void		init_dongles(t_simulation *simulation);
+t_error		init_dongles(t_simulation *simulation);
 void		init_coders(t_simulation *simulation);
 void		free_simulation(t_simulation *simulation);
 

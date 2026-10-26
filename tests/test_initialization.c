@@ -28,6 +28,12 @@ int	test_single_coder(void)
 		printf("FAIL: init single coder\n");
 		return (1);
 	}
+	if (sim.dongle_mutexes_initialized != 1)
+	{
+		printf("FAIL: initialized mutex count.\n");
+		free_simulation(&sim);
+		return (1);
+	}
 	if (sim.coders == NULL || sim.dongles == NULL)
 	{
 		printf("FAIL: null arrays\n");
@@ -58,7 +64,8 @@ int	test_single_coder(void)
 		return (1);
 	}
 	free_simulation(&sim);
-	if (sim.coders != NULL || sim.dongles != NULL)
+	if (sim.coders != NULL || sim.dongles != NULL
+		|| sim.dongle_mutexes_initialized != 0)
 	{
 		printf("FAIL: cleanup pointers\n");
 		return (1);
@@ -80,6 +87,12 @@ int	test_four_coders(void)
 	if (error != NO_ERR)
 	{
 		printf("FAIL: init four coders\n");
+		return (1);
+	}
+	if (sim.dongle_mutexes_initialized != 4)
+	{
+		printf("FAIL: initialized mutex count.\n");
+		free_simulation(&sim);
 		return (1);
 	}
 	n = config.number_of_coders;
@@ -113,6 +126,12 @@ int	test_four_coders(void)
 		index++;
 	}
 	free_simulation(&sim);
+	if (sim.coders != NULL || sim.dongles != NULL
+		|| sim.dongle_mutexes_initialized != 0)
+	{
+		printf("FAIL: cleanup pointers\n");
+		return (1);
+	}
 	printf("PASS: four coders\n");
 	return (0);
 }
@@ -153,4 +172,7 @@ int	main(void)
 	printf("All initialization tests passed\n");
 	return (0);
 }
+
+
+
 

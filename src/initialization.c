@@ -5,6 +5,7 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 	if (simulation == NULL || config == NULL)
 		return (INVALID_CONFIG_ERR);
 	simulation->simulation_start = 0;
+	simulation->dongle_mutexes_initialized = 0;
 	simulation->config = *config;
 	simulation->coders = NULL;
 	simulation->dongles = NULL;
@@ -17,12 +18,16 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 		free_simulation(simulation);
 		return (MALLOC_ERR);
 	}
-	init_dongles(simulation);
+	if (init_dongles(simulation) != NO_ERR)
+	{
+		free_simulation(simulation);
+		return (MUTEX_INIT_ERR);
+	}
 	init_coders(simulation);
 	return (NO_ERR);
 }
 
-void	init_dongles(t_simulation *simulation)
+t_error	init_dongles(t_simulation *simulation)
 {
 	int		index;
 	int		nb_max;
@@ -33,8 +38,13 @@ void	init_dongles(t_simulation *simulation)
 	{
 		simulation->dongles[index].is_dispo = DONGLE_AVAILABLE;
 		simulation->dongles[index].available_at_ms = 0;
+		if (pthread_mutex_init(
+			&simulation->dongles[index].mutex, NULL) != 0)
+			return (MUTEX_INIT_ERR);
+		simulation->dongle_mutexes_initialized ++;
 		index ++;
 	}
+	return (NO_ERR);
 }
 
 void	init_coders(t_simulation *simulation)
@@ -60,10 +70,20 @@ void	init_coders(t_simulation *simulation)
 
 void	free_simulation(t_simulation *simulation)
 {
+	int		index;
+
 	if (simulation == NULL)
 		return ;
+	index = 0;
+	while (simulation->dongles != NULL
+		&& index < simulation->dongle_mutexes_initialized)
+	{
+		pthread_mutex_destroy(&simulation->dongles[index].mutex);
+		index ++;
+	}
 	free(simulation->coders);
 	free(simulation->dongles);
 	simulation->coders = NULL;
 	simulation->dongles = NULL;
+	simulation->dongle_mutexes_initialized = 0;
 }
