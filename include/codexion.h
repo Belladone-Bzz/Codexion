@@ -19,13 +19,14 @@ typedef enum e_error
 	NUMBER_OVERFLOW_ERR,
 	INVALID_SCHEDULER_ERR,
 	INVALID_CONFIG_ERR,
-	MUTEX_INIT_ERR
+	MUTEX_INIT_ERR,
+	THREAD_ERR
 }	t_error;
 
 typedef enum e_dongle_flag
 {
 	DONGLE_AVAILABLE,
-	DONGLE_UNAVAILABLE,
+	DONGLE_UNAVAILABLE
 }	t_dongle_flag;
 
 typedef enum e_scheduler
@@ -76,6 +77,7 @@ typedef struct s_simulation
 	t_config		config;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	pthread_t		*thread_coder;
 	long			simulation_start;
 	int				dongle_mutexes_initialized;
 }	t_simulation;
@@ -89,8 +91,10 @@ void		print_error(t_error error);
 long		get_time_ms(void);
 void		sleep_ms(long duration);
 t_error		init_simulation(t_simulation *simulation, t_config *config);
+t_error		allocate_simulation_arrays(t_simulation *simulation);
 t_error		init_dongles(t_simulation *simulation);
 void		init_coders(t_simulation *simulation);
 void		free_simulation(t_simulation *simulation);
+void		*coder_routine(void *data);
 
 #endif
