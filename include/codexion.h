@@ -95,6 +95,6 @@ t_error		allocate_simulation_arrays(t_simulation *simulation);
 t_error		init_dongles(t_simulation *simulation);
 void		init_coders(t_simulation *simulation);
 void		free_simulation(t_simulation *simulation);
-void		*coder_routine(void *data);
+void		*coder_behavior(void *data);
 
 #endif

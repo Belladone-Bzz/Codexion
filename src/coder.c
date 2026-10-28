@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-void	*coder_routine(void *data)
+void	*coder_behavior(void *data)
 {
 	t_coder		*coder;
 
