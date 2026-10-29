@@ -128,7 +128,7 @@ int	test_four_coders(void)
 			printf("FAIL: dongle values\n");
 			free_simulation(&sim);
 			return (1);
-		}
+		}	printf(YELLOW)
 		if (sim.coders[index].right_dongle != &sim.dongles[index]
 			|| sim.coders[index].left_dongle
 			!= &sim.dongles[(index + n - 1) % n])

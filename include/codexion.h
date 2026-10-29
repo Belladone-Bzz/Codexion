@@ -10,6 +10,13 @@
 # include <stdlib.h>
 # include <pthread.h>
 
+//Colors
+# define YELLOW "\033[38;5;3m"
+# define BLUE "\033[38;5;4m"
+# define PINK "\033[38;5;5m"
+# define RED "\033[38;5;1m"
+# define GREEN "\033[38;5;48m"
+
 typedef enum e_error
 {
 	NO_ERR,
@@ -59,7 +66,7 @@ typedef struct s_dongle
 {
 	t_dongle_flag		is_dispo;
 	long				available_at_ms;
-	pthread_mutex_t		mutex;
+	pthread_mutex_t		mutex_dongle;
 }	t_dongle;
 
 typedef struct s_coder
@@ -74,14 +81,14 @@ typedef struct s_coder
 
 typedef struct s_simulation
 {
-	t_config		config;
-	t_coder			*coders;
-	t_dongle		*dongles;
-	pthread_t		*thread_coder;
-	long			simulation_start;
-	int				dongle_mutexes_initialized;
+	t_config			config;
+	t_coder				*coders;
+	t_dongle			*dongles;
+	pthread_t			*thread_coder;
+	pthread_mutex_t		mutex_printer;
+	long				simulation_start;
+	int					dongle_mutexes_initialized;
 }	t_simulation;
-
 
 t_error		parse_number(const char *str, int *value);
 t_error		parse_scheduler(const char *str, t_scheduler *scheduler);

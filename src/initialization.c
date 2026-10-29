@@ -10,6 +10,8 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 	simulation->coders = NULL;
 	simulation->dongles = NULL;
 	simulation->thread_coder = NULL;
+	if (pthread_mutex_init(&simulation->mutex_printer, NULL) != 0)
+			return (MUTEX_INIT_ERR);
 	if (allocate_simulation_arrays(simulation) != NO_ERR)
 	{
 		free_simulation(simulation);
@@ -36,7 +38,7 @@ t_error	init_dongles(t_simulation *simulation)
 		simulation->dongles[index].is_dispo = DONGLE_AVAILABLE;
 		simulation->dongles[index].available_at_ms = 0;
 		if (pthread_mutex_init(
-				&simulation->dongles[index].mutex, NULL) != 0)
+				&simulation->dongles[index].mutex_dongle, NULL) != 0)
 			return (MUTEX_INIT_ERR);
 		simulation->dongle_mutexes_initialized ++;
 		index ++;
@@ -91,7 +93,7 @@ void	free_simulation(t_simulation *simulation)
 	while (simulation->dongles != NULL
 		&& index < simulation->dongle_mutexes_initialized)
 	{
-		pthread_mutex_destroy(&simulation->dongles[index].mutex);
+		pthread_mutex_destroy(&simulation->dongles[index].mutex_dongle);
 		index ++;
 	}
 	free(simulation->coders);
