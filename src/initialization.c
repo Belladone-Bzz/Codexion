@@ -6,12 +6,14 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 		return (INVALID_CONFIG_ERR);
 	simulation->simulation_start = 0;
 	simulation->dongle_mutexes_initialized = 0;
+	simulation->printer_mutex_initialized = 0;
 	simulation->config = *config;
 	simulation->coders = NULL;
 	simulation->dongles = NULL;
 	simulation->thread_coder = NULL;
 	if (pthread_mutex_init(&simulation->mutex_printer, NULL) != 0)
 			return (MUTEX_INIT_ERR);
+	simulation->printer_mutex_initialized = 1;
 	if (allocate_simulation_arrays(simulation) != NO_ERR)
 	{
 		free_simulation(simulation);
@@ -62,6 +64,7 @@ void	init_coders(t_simulation *simulation)
 		simulation->coders[index].right_dongle = &simulation->dongles[index];
 		simulation->coders[index].left_dongle = &simulation->dongles[(
 				index + nb_max - 1) % nb_max];
+		simulation->coders[index].simulation = simulation;
 		index ++;
 	}
 }
@@ -76,7 +79,7 @@ t_error	init_thread(t_simulation *simulation)
 	while (index < nb_max)
 	{
 		if (pthread_create(&simulation->thread_coder[index],
-				NULL, coder_routine, &simulation->coders[index]) != 0)
+				NULL, coder_behavior, &simulation->coders[index]) != 0)
 			return (THREAD_ERR);
 		index ++;
 	}
@@ -96,6 +99,9 @@ void	free_simulation(t_simulation *simulation)
 		pthread_mutex_destroy(&simulation->dongles[index].mutex_dongle);
 		index ++;
 	}
+	if (simulation->printer_mutex_initialized)
+		pthread_mutex_destroy(&simulation->mutex_printer);
+	simulation->printer_mutex_initialized = 0;
 	free(simulation->coders);
 	free(simulation->dongles);
 	free(simulation->thread_coder);

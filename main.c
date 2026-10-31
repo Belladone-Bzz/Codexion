@@ -9,6 +9,8 @@ int	main(int argc, char **argv)
 	error = parse_args(argc, argv, &config);
 	if (error == NO_ERR)
 		error = init_simulation(&simulation, &config);
+	if (error == NO_ERR)
+		error = init_thread(&simulation);
 	if (error != NO_ERR)
 	{
 		print_error(error);

@@ -13,8 +13,6 @@
 //Colors
 # define YELLOW "\033[38;5;3m"
 # define BLUE "\033[38;5;4m"
-# define PINK "\033[38;5;5m"
-# define RED "\033[38;5;1m"
 # define GREEN "\033[38;5;48m"
 
 typedef enum e_error
@@ -69,16 +67,6 @@ typedef struct s_dongle
 	pthread_mutex_t		mutex_dongle;
 }	t_dongle;
 
-typedef struct s_coder
-{
-	int				id;
-	t_coder_state	state;
-	long			last_compilation_start;
-	int				compilations_done;
-	t_dongle		*left_dongle;
-	t_dongle		*right_dongle;
-}	t_coder;
-
 typedef struct s_simulation
 {
 	t_config			config;
@@ -88,7 +76,19 @@ typedef struct s_simulation
 	pthread_mutex_t		mutex_printer;
 	long				simulation_start;
 	int					dongle_mutexes_initialized;
+	int				printer_mutex_initialized;
 }	t_simulation;
+
+typedef struct s_coder
+{
+	int				id;
+	t_coder_state	state;
+	long			last_compilation_start;
+	int				compilations_done;
+	t_dongle		*left_dongle;
+	t_dongle		*right_dongle;
+	t_simulation	*simulation;
+}	t_coder;
 
 t_error		parse_number(const char *str, int *value);
 t_error		parse_scheduler(const char *str, t_scheduler *scheduler);
@@ -101,7 +101,9 @@ t_error		init_simulation(t_simulation *simulation, t_config *config);
 t_error		allocate_simulation_arrays(t_simulation *simulation);
 t_error		init_dongles(t_simulation *simulation);
 void		init_coders(t_simulation *simulation);
+t_error 	init_thread(t_simulation *simulation);
 void		free_simulation(t_simulation *simulation);
 void		*coder_behavior(void *data);
+void		print_status(t_coder *coder, char *message);
 
 #endif

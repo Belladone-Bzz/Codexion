@@ -13,6 +13,3 @@ t_error	allocate_simulation_arrays(t_simulation *simulation)
 		return (MALLOC_ERR);
 	return (NO_ERR);
 }
-
-
-
