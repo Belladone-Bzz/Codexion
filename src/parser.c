@@ -46,7 +46,7 @@ t_error	validate_config(t_config *config)
 {
 	if (config == NULL)
 		return (INVALID_CONFIG_ERR);
-	if (config->number_of_coders < 1 || config->number_of_coders > 10000)
+	if (config->number_of_coders < 1 || config->number_of_coders > 500)
 		return (INVALID_CONFIG_ERR);
 	if (config->time_to_burnout < 0 || config->time_to_compile < 0
 		|| config->time_to_debug < 0 || config->time_to_refactor < 0

@@ -25,6 +25,7 @@ typedef enum e_error
 	INVALID_SCHEDULER_ERR,
 	INVALID_CONFIG_ERR,
 	MUTEX_INIT_ERR,
+	COND_INIT_ERR,
 	THREAD_ERR
 }	t_error;
 
@@ -45,8 +46,17 @@ typedef enum e_coder_state
 	WAITING,
 	COMPILING,
 	DEBUGGING,
-	REFACTORING
+	REFACTORING,
+	DONE
 }	t_coder_state;
+
+typedef enum e_simulation_state
+{
+	RUNNING,
+	FINISHED,
+	ERROR,
+	BURNING
+}	t_simulation_state;
 
 typedef struct s_config
 {
@@ -86,11 +96,12 @@ typedef struct s_simulation
 	t_coder				*coders;
 	t_dongle			*dongles;
 	pthread_t			*thread_coder;
+	pthread_t			*monitoring;
 	pthread_mutex_t		mutex_printer;
+	pthread_cond_t		start_condition;
 	long				simulation_start;
-	int					dongle_mutexes_initialized;
-	int					printer_mutex_initialized;
 	int					thread_created;
+	t_simulation_state	state;
 }	t_simulation;
 
 t_error		parse_number(const char *str, int *value);
@@ -108,6 +119,7 @@ t_error		init_thread(t_simulation *simulation);
 t_error		join_threads(t_simulation *simulation);
 void		free_simulation(t_simulation *simulation);
 void		*coder_behavior(void *data);
+void		*monitoring(void *data);
 void		print_status(t_coder *coder, char *message);
 
 #endif

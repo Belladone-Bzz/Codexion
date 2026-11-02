@@ -31,6 +31,8 @@ void	print_error(t_error error)
 		fprintf(stderr, "Error: memory allocation failed.\n");
 	else if (error == MUTEX_INIT_ERR)
 		fprintf(stderr, "Error: mutex initialization failed.\n");
+	else if (error == THREAD_ERR)
+		fprintf(stderr, "Error: thread initialization failed.\n");
 	else
 		fprintf(stderr, "Error: unknown error.\n");
 }
