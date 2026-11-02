@@ -1,7 +1,7 @@
 SRC =	main.c
 
-SRC +=	src/parser.c src/initialization.c src/time.c src/error.c src/coder.c \
-		src/init_utils.c
+SRC +=	src/parser.c src/initialization.c src/time.c src/printer.c src/coder.c \
+		src/thread.c
 
 OBJ =	$(SRC:.c=.o)
 
@@ -12,7 +12,7 @@ NAME =	codexion
 
 all: $(NAME)
 
-$(NAME): $(OBJ) 
+$(NAME): $(OBJ)
 	$(CC) $(OBJ) -o $(NAME)
 
 %.o: %.c

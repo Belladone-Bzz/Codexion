@@ -34,7 +34,7 @@ int	test_single_coder(void)
 		free_simulation(&sim);
 		return (1);
 	}
-	if (pthread_mutex_lock(&sim.dongles[0].mutex) != 0)
+	if (pthread_mutex_lock(&sim.dongles[0].mutex_dongle) != 0)
 	{
 		printf("FAIL: mutex lock.\n");
 		free_simulation(&sim);
@@ -42,7 +42,7 @@ int	test_single_coder(void)
 	}
 	else
 	{
-		if (pthread_mutex_unlock(&sim.dongles[0].mutex) != 0)
+		if (pthread_mutex_unlock(&sim.dongles[0].mutex_dongle) != 0)
 		{
 			printf("FAIL: mutex unlock.\n");
 			return (1);
@@ -128,7 +128,7 @@ int	test_four_coders(void)
 			printf("FAIL: dongle values\n");
 			free_simulation(&sim);
 			return (1);
-		}	printf(YELLOW)
+		}
 		if (sim.coders[index].right_dongle != &sim.dongles[index]
 			|| sim.coders[index].left_dongle
 			!= &sim.dongles[(index + n - 1) % n])
@@ -137,7 +137,7 @@ int	test_four_coders(void)
 			free_simulation(&sim);
 			return (1);
 		}
-		if (pthread_mutex_lock(&sim.dongles[index].mutex) != 0)
+		if (pthread_mutex_lock(&sim.dongles[index].mutex_dongle) != 0)
 		{
 			printf("FAIL: mutex lock.\n");
 			free_simulation(&sim);
@@ -145,7 +145,7 @@ int	test_four_coders(void)
 		}
 		else
 		{
-			if (pthread_mutex_unlock(&sim.dongles[index].mutex) != 0)
+			if (pthread_mutex_unlock(&sim.dongles[index].mutex_dongle) != 0)
 			{
 				printf("FAIL: mutex unlock.\n");
 				return (1);

@@ -7,6 +7,7 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 	simulation->simulation_start = 0;
 	simulation->dongle_mutexes_initialized = 0;
 	simulation->printer_mutex_initialized = 0;
+	simulation->thread_created = 0;
 	simulation->config = *config;
 	simulation->coders = NULL;
 	simulation->dongles = NULL;
@@ -69,20 +70,17 @@ void	init_coders(t_simulation *simulation)
 	}
 }
 
-t_error	init_thread(t_simulation *simulation)
+t_error	allocate_simulation_arrays(t_simulation *simulation)
 {
-	int		index;
 	int		nb_max;
 
-	index = 0;
 	nb_max = simulation->config.number_of_coders;
-	while (index < nb_max)
-	{
-		if (pthread_create(&simulation->thread_coder[index],
-				NULL, coder_behavior, &simulation->coders[index]) != 0)
-			return (THREAD_ERR);
-		index ++;
-	}
+	simulation->coders = malloc(nb_max * sizeof(t_coder));
+	simulation->dongles = malloc(nb_max * sizeof(t_dongle));
+	simulation->thread_coder = malloc(nb_max * sizeof(pthread_t));
+	if (simulation->coders == NULL || simulation->dongles == NULL
+			|| simulation->thread_coder == NULL)
+		return (MALLOC_ERR);
 	return (NO_ERR);
 }
 
