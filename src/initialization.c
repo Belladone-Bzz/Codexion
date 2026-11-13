@@ -56,7 +56,7 @@ void	init_coders(t_simulation *simulation)
 	{
 		simulation->coders[index].id = index + 1;
 		simulation->coders[index].state = WAITING;
-		simulation->coders[index].last_compilation_start = 0;
+		simulation->coders[index].last_compilation = 0;
 		simulation->coders[index].compilations_done = 0;
 		simulation->coders[index].right_dongle = &simulation->dongles[index];
 		simulation->coders[index].left_dongle = &simulation->dongles[(

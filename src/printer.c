@@ -1,15 +1,26 @@
 #include "codexion.h"
 
-void	print_status(t_coder *coder, char *message)
+void	print_status(t_coder *coder, t_coder_state state)
 {
 	long			elapsed_time;
 	t_simulation	*simulation;
 
+	if (state == WAITING)
+		return ;
 	simulation = coder->simulation;
 	pthread_mutex_lock(&simulation->mutex_printer);
 	elapsed_time = get_time_ms() - simulation->simulation_start;
-	printf(YELLOW"%ld "BLUE"%d "GREEN"%s\n", elapsed_time, coder->id, message);
-	fflush(stdout);
+	printf(YELLOW"%ld "BLUE"%d ", elapsed_time, coder->id);
+	if (state == COMPILING)
+		printf(GREEN"is compiling\n");
+	else if (state == DEBUGGING)
+		printf(GREEN"is debugging\n");
+	else if (state == REFACTORING)
+		printf(GREEN"is refactoring\n");
+	else if (state == BURNOUT)
+		printf(GREEN"burned out\n");
+	else if (state == DONE)
+		printf(GREEN"has finished compiling\n");
 	pthread_mutex_unlock(&simulation->mutex_printer);
 }
 

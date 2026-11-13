@@ -84,7 +84,7 @@ typedef struct s_coder
 {
 	int					id;
 	t_coder_state		state;
-	long				last_compilation_start;
+	long				last_compilation;
 	int					compilations_done;
 	pthread_mutex_t		mutex_coder;
 	t_dongle			*left_dongle;
@@ -113,7 +113,7 @@ t_error		validate_config(t_config *config);
 t_error		parse_args(int argc, char **argv, t_config *config);
 void		print_error(t_error error);
 long		get_time_ms(void);
-void		sleep_ms(long duration);
+bool		sleep_ms(long duration, t_coder *coder);
 t_error		init_simulation(t_simulation *simulation, t_config *config);
 t_error		allocate_simulation_arrays(t_simulation *simulation);
 t_error		init_dongles(t_simulation *simulation);
@@ -123,6 +123,7 @@ t_error		join_threads(t_simulation *simulation);
 void		free_simulation(t_simulation *simulation);
 void		*coder_behavior(void *data);
 void		*monitoring(void *data);
-void		print_status(t_coder *coder, char *message);
+void		print_status(t_coder *coder, t_coder_state state);
+bool		check_burnout(t_coder *coder);
 
 #endif

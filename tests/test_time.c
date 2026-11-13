@@ -13,7 +13,7 @@ int	main(void)
 	failures = 0;
 	printf("=== Duration test ===\n");
 	starting = get_time_ms();
-	sleep_ms(100);
+	usleep(10000);
 	ending = get_time_ms();
 	duration = ending - starting;
 	printf("Requested: 100ms, measured: %ld ms.\n", duration);
