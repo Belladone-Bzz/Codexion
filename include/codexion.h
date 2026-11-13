@@ -52,12 +52,12 @@ typedef enum e_coder_state
 	DONE
 }	t_coder_state;
 
-typedef enum e_simulation_state
+typedef enum e_sim_state
 {
 	RUNNING,
 	FINISHED,
 	BURNING
-}	t_simulation_state;
+}	t_sim_state;
 
 typedef struct s_config
 {
@@ -104,26 +104,27 @@ typedef struct s_simulation
 	pthread_cond_t		start_condition;
 	long				simulation_start;
 	int					thread_created;
-	t_simulation_state	state;
+	t_sim_state			state;
 }	t_simulation;
 
-t_error		parse_number(const char *str, int *value);
-t_error		parse_scheduler(const char *str, t_scheduler *scheduler);
-t_error		validate_config(t_config *config);
-t_error		parse_args(int argc, char **argv, t_config *config);
-void		print_error(t_error error);
-long		get_time_ms(void);
-bool		sleep_ms(long duration, t_coder *coder);
-t_error		init_simulation(t_simulation *simulation, t_config *config);
-t_error		allocate_simulation_arrays(t_simulation *simulation);
-t_error		init_dongles(t_simulation *simulation);
-void		init_coders(t_simulation *simulation);
-t_error		init_thread(t_simulation *simulation);
-t_error		join_threads(t_simulation *simulation);
-void		free_simulation(t_simulation *simulation);
-void		*coder_behavior(void *data);
-void		*monitoring(void *data);
-void		print_status(t_coder *coder, t_coder_state state);
-bool		check_burnout(t_coder *coder);
+t_error			parse_number(const char *str, int *value);
+t_error			parse_scheduler(const char *str, t_scheduler *scheduler);
+t_error			validate_config(t_config *config);
+t_error			parse_args(int argc, char **argv, t_config *config);
+void			print_error(t_error error);
+long			get_time_ms(void);
+bool			sleep_ms(long duration, t_coder *coder);
+t_error			init_simulation(t_simulation *simulation, t_config *config);
+t_error			allocate_simulation_arrays(t_simulation *simulation);
+t_error			init_dongles(t_simulation *simulation);
+void			init_coders(t_simulation *simulation);
+t_error			init_thread(t_simulation *simulation);
+t_error			join_threads(t_simulation *simulation);
+void			free_simulation(t_simulation *simulation);
+void			*coder_behavior(void *data);
+void			*monitoring(void *data);
+void			print_status(t_coder *coder, t_coder_state state);
+bool			check_burnout(t_coder *coder);
+t_sim_state		check_simulation_state(t_simulation *simulation);
 
 #endif

@@ -31,7 +31,8 @@ void	*coder_behavior(void *data)
 	pthread_mutex_unlock(&simulation->mutex_starter);
 	coder->last_compilation = get_time_ms();
 	while (coder->compilations_done < simulation->config.compiles_required &&
-		simulation->state == RUNNING && check_burnout(coder) == false)
+		check_simulation_state(simulation) == RUNNING
+		&& check_burnout(coder) == false)
 	{
 		// Ajouter fonctions pour prendre et gerer dongles
 		set_state(coder, COMPILING);
