@@ -1,7 +1,7 @@
 SRC =	main.c
 
 SRC +=	src/parser.c src/initialization.c src/time.c src/printer.c src/coder.c \
-		src/thread.c
+		src/thread.c src/monitoring.c
 
 OBJ =	$(SRC:.c=.o)
 

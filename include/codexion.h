@@ -9,6 +9,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <pthread.h>
+# include <stdbool.h>
 
 //Colors
 # define YELLOW "\033[38;5;3m"
@@ -47,6 +48,7 @@ typedef enum e_coder_state
 	COMPILING,
 	DEBUGGING,
 	REFACTORING,
+	BURNOUT,
 	DONE
 }	t_coder_state;
 
@@ -54,7 +56,6 @@ typedef enum e_simulation_state
 {
 	RUNNING,
 	FINISHED,
-	ERROR,
 	BURNING
 }	t_simulation_state;
 
@@ -81,13 +82,14 @@ typedef struct s_simulation t_simulation;
 
 typedef struct s_coder
 {
-	int				id;
-	t_coder_state	state;
-	long			last_compilation_start;
-	int				compilations_done;
-	t_dongle		*left_dongle;
-	t_dongle		*right_dongle;
-	t_simulation	*simulation;
+	int					id;
+	t_coder_state		state;
+	long				last_compilation_start;
+	int					compilations_done;
+	pthread_mutex_t		mutex_coder;
+	t_dongle			*left_dongle;
+	t_dongle			*right_dongle;
+	t_simulation		*simulation;
 }	t_coder;
 
 typedef struct s_simulation
@@ -96,8 +98,9 @@ typedef struct s_simulation
 	t_coder				*coders;
 	t_dongle			*dongles;
 	pthread_t			*thread_coder;
-	pthread_t			*monitoring;
+	pthread_t			monitoring;
 	pthread_mutex_t		mutex_printer;
+	pthread_mutex_t		mutex_starter;
 	pthread_cond_t		start_condition;
 	long				simulation_start;
 	int					thread_created;

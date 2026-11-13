@@ -6,6 +6,7 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 		return (INVALID_CONFIG_ERR);
 	simulation->simulation_start = 0;
 	simulation->thread_created = 0;
+	simulation->state = RUNNING;
 	simulation->config = *config;
 	if (pthread_mutex_init(&simulation->mutex_printer, NULL) != 0)
 		return (MUTEX_INIT_ERR);
@@ -90,6 +91,13 @@ void	free_simulation(t_simulation *simulation)
 		&& index < simulation->config.number_of_coders)
 	{
 		pthread_mutex_destroy(&simulation->dongles[index].mutex_dongle);
+		index ++;
+	}
+	index = 0;
+	while (simulation->coders != NULL
+		&& index < simulation->config.number_of_coders)
+	{
+		pthread_mutex_destroy(&simulation->coders[index].mutex_coder);
 		index ++;
 	}
 	pthread_mutex_destroy(&simulation->mutex_printer);

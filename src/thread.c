@@ -8,13 +8,14 @@ t_error	init_thread(t_simulation *simulation)
 	index = 0;
 	nb_max = simulation->config.number_of_coders;
 	if (pthread_create(&simulation->monitoring,
-				NULL, monitoring, &simulation->monitoring) != 0)
+				NULL, monitoring, simulation->coders) != 0)
 		return (THREAD_ERR);
 	while (index < nb_max)
 	{
 		if (pthread_create(&simulation->thread_coder[index],
 				NULL, coder_behavior, &simulation->coders[index]) != 0)
 			return (THREAD_ERR);
+		simulation->thread_created ++;
 		index ++;
 	}
 	sleep_ms(10);
