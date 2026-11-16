@@ -10,6 +10,8 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 	simulation->config = *config;
 	if (pthread_mutex_init(&simulation->mutex_printer, NULL) != 0)
 		return (MUTEX_INIT_ERR);
+	if (pthread_mutex_init(&simulation->mutex_starter, NULL) != 0)
+		return (MUTEX_INIT_ERR);
 	if (pthread_cond_init(&simulation->start_condition, NULL) != 0)
 		return (COND_INIT_ERR);
 	if (allocate_simulation_arrays(simulation) != NO_ERR)
@@ -17,12 +19,12 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 		free_simulation(simulation);
 		return (MALLOC_ERR);
 	}
-	if (init_dongles(simulation) != NO_ERR)
+	if (init_dongles(simulation) != NO_ERR
+		|| init_coders(simulation) != NO_ERR)
 	{
 		free_simulation(simulation);
 		return (MUTEX_INIT_ERR);
 	}
-	init_coders(simulation);
 	return (NO_ERR);
 }
 
@@ -35,7 +37,7 @@ t_error	init_dongles(t_simulation *simulation)
 	nb_max = simulation->config.number_of_coders;
 	while (index < nb_max)
 	{
-		simulation->dongles[index].is_dispo = DONGLE_AVAILABLE;
+		simulation->dongles[index].is_dispo = AVAILABLE;
 		simulation->dongles[index].available_at_ms = 0;
 		if (pthread_mutex_init(
 				&simulation->dongles[index].mutex_dongle, NULL) != 0)
@@ -45,7 +47,7 @@ t_error	init_dongles(t_simulation *simulation)
 	return (NO_ERR);
 }
 
-void	init_coders(t_simulation *simulation)
+t_error	init_coders(t_simulation *simulation)
 {
 	int		index;
 	int		nb_max;
@@ -62,8 +64,12 @@ void	init_coders(t_simulation *simulation)
 		simulation->coders[index].left_dongle = &simulation->dongles[(
 				index + nb_max - 1) % nb_max];
 		simulation->coders[index].simulation = simulation;
+		if (pthread_mutex_init(
+				&simulation->coders[index].mutex_coder, NULL) != 0)
+			return (MUTEX_INIT_ERR);
 		index ++;
 	}
+	return (NO_ERR);
 }
 
 t_error	allocate_simulation_arrays(t_simulation *simulation)
@@ -75,7 +81,7 @@ t_error	allocate_simulation_arrays(t_simulation *simulation)
 	simulation->dongles = malloc(nb_max * sizeof(t_dongle));
 	simulation->thread_coder = malloc(nb_max * sizeof(pthread_t));
 	if (simulation->coders == NULL || simulation->dongles == NULL
-			|| simulation->thread_coder == NULL)
+		|| simulation->thread_coder == NULL)
 		return (MALLOC_ERR);
 	return (NO_ERR);
 }
@@ -101,6 +107,7 @@ void	free_simulation(t_simulation *simulation)
 		index ++;
 	}
 	pthread_mutex_destroy(&simulation->mutex_printer);
+	pthread_mutex_destroy(&simulation->mutex_starter);
 	free(simulation->coders);
 	free(simulation->dongles);
 	free(simulation->thread_coder);

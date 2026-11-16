@@ -59,7 +59,7 @@ t_error	parse_args(int argc, char **argv, t_config *config)
 {
 	int				*values[7];
 	int				index;
-	t_error	error;
+	t_error			error;
 
 	if (argc != 9 || argv == NULL || config == NULL)
 		return (INVALID_ARGS_NUMBER);

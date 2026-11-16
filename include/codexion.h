@@ -32,8 +32,8 @@ typedef enum e_error
 
 typedef enum e_dongle_flag
 {
-	DONGLE_AVAILABLE,
-	DONGLE_UNAVAILABLE
+	AVAILABLE,
+	UNAVAILABLE
 }	t_dongle_flag;
 
 typedef enum e_scheduler
@@ -71,14 +71,9 @@ typedef struct s_config
 	t_scheduler	scheduler;
 }	t_config;
 
-typedef struct s_dongle
-{
-	t_dongle_flag		is_dispo;
-	long				available_at_ms;
-	pthread_mutex_t		mutex_dongle;
-}	t_dongle;
+typedef struct s_simulation		t_simulation;
 
-typedef struct s_simulation t_simulation;
+typedef struct s_dongle			t_dongle;
 
 typedef struct s_coder
 {
@@ -91,6 +86,14 @@ typedef struct s_coder
 	t_dongle			*right_dongle;
 	t_simulation		*simulation;
 }	t_coder;
+
+typedef struct s_dongle
+{
+	t_dongle_flag		is_dispo;
+	long				available_at_ms;
+	pthread_mutex_t		mutex_dongle;
+	t_coder				*queue[2];
+}	t_dongle;
 
 typedef struct s_simulation
 {
@@ -117,7 +120,7 @@ bool			sleep_ms(long duration, t_coder *coder);
 t_error			init_simulation(t_simulation *simulation, t_config *config);
 t_error			allocate_simulation_arrays(t_simulation *simulation);
 t_error			init_dongles(t_simulation *simulation);
-void			init_coders(t_simulation *simulation);
+t_error			init_coders(t_simulation *simulation);
 t_error			init_thread(t_simulation *simulation);
 t_error			join_threads(t_simulation *simulation);
 void			free_simulation(t_simulation *simulation);
@@ -126,5 +129,6 @@ void			*monitoring(void *data);
 void			print_status(t_coder *coder, t_coder_state state);
 bool			check_burnout(t_coder *coder);
 t_sim_state		check_simulation_state(t_simulation *simulation);
+bool			request_dongles(t_coder *coder);
 
 #endif

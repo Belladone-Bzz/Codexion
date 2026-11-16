@@ -14,13 +14,13 @@ long	get_time_ms(void)
 bool	sleep_ms(long duration, t_coder *coder)
 {
 	long	duration_ms;
-	
-	duration_ms = duration*1000;
+
+	duration_ms = duration * 1000;
 	while (duration_ms > 0)
 	{
 		if (coder->simulation->state != RUNNING
 			|| check_burnout(coder) == true)
-			return false;
+			return (false);
 		usleep(100);
 		duration_ms -= 100;
 	}

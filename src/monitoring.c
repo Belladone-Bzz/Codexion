@@ -14,7 +14,7 @@ t_sim_state	check_simulation_state(t_simulation *simulation)
 	pthread_mutex_lock(&simulation->mutex_starter);
 	sim_state = simulation->state;
 	pthread_mutex_unlock(&simulation->mutex_starter);
-	return sim_state;
+	return (sim_state);
 }
 
 t_sim_state	check_coders(t_simulation *simulation)
@@ -40,7 +40,7 @@ t_sim_state	check_coders(t_simulation *simulation)
 	}
 	if (coders_done == simulation->config.number_of_coders)
 		set_simulation_state(simulation, FINISHED);
-	return (simulation->state);
+	return (check_simulation_state(simulation));
 }
 
 void	*monitoring(void *data)
@@ -55,6 +55,6 @@ void	*monitoring(void *data)
 		&simulation->mutex_starter);
 	pthread_mutex_unlock(&simulation->mutex_starter);
 	while (check_coders(simulation) == RUNNING)
-		continue;
+		continue ;
 	return (NULL);
 }
