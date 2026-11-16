@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-void	set_state(t_coder *coder, t_coder_state state)
+static void	set_state(t_coder *coder, t_coder_state state)
 {
 	pthread_mutex_lock(&coder->mutex_coder);
 	coder->state = state;
@@ -19,7 +19,7 @@ bool	check_burnout(t_coder *coder)
 	return (false);
 }
 
-void	queue_attribution(t_coder *coder)
+static void	queue_attribution(t_coder *coder)
 {
 	if (coder->left_dongle->queue[0] == NULL
 		|| coder->left_dongle->queue[0] == coder)
@@ -31,6 +31,30 @@ void	queue_attribution(t_coder *coder)
 		coder->right_dongle->queue[0] = coder;
 	else
 		coder->right_dongle->queue[1] = coder;
+}
+
+static int	coder_processing(t_coder *coder)
+{
+	t_simulation	*simulation;
+
+	simulation = coder->simulation;
+	queue_attribution(coder);
+	while (request_dongles(coder) == false)
+		if (check_simulation_state(simulation) != RUNNING
+			|| check_burnout(coder) == true)
+			return (1);
+	set_state(coder, COMPILING);
+	coder->last_compilation = get_time_ms();
+	if (sleep_ms(simulation->config.time_to_compile, coder) == false)
+		return (1);
+	coder->compilations_done++;
+	set_state(coder, DEBUGGING);
+	if (sleep_ms(simulation->config.time_to_debug, coder) == false)
+		return (1);
+	set_state(coder, REFACTORING);
+	if (sleep_ms(simulation->config.time_to_refactor, coder) == false)
+		return (1);
+	return (0);
 }
 
 void	*coder_behavior(void *data)
@@ -51,24 +75,8 @@ void	*coder_behavior(void *data)
 	while (coder->compilations_done < simulation->config.compiles_required
 		&& check_simulation_state(simulation) == RUNNING
 		&& check_burnout(coder) == false)
-	{
-		queue_attribution(coder);
-		while (request_dongles(coder) == false)
-			if (check_simulation_state(simulation) != RUNNING
-				|| check_burnout(coder) == true)
-				return (NULL);
-		set_state(coder, COMPILING);
-		coder->last_compilation = get_time_ms();
-		if (sleep_ms(simulation->config.time_to_compile, coder) == false)
+		if (coder_processing(coder) != 0)
 			return (NULL);
-		coder->compilations_done++;
-		set_state(coder, DEBUGGING);
-		if (sleep_ms(simulation->config.time_to_debug, coder) == false)
-			return (NULL);
-		set_state(coder, REFACTORING);
-		if (sleep_ms(simulation->config.time_to_refactor, coder) == false)
-			return (NULL);
-	}
 	set_state(coder, DONE);
 	return (NULL);
 }

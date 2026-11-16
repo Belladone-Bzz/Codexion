@@ -3,12 +3,13 @@
 static void	check_queue(t_dongle *dongle)
 {
 	t_coder		*priority;
+
 	if (dongle->queue[0] != NULL && dongle->queue[1] != NULL)
 	{
 		pthread_mutex_lock(&dongle->queue[0]->mutex_coder);
 		pthread_mutex_lock(&dongle->queue[1]->mutex_coder);
 		if (dongle->queue[1]->last_compilation - get_time_ms()
-		< dongle->queue[0]->last_compilation - get_time_ms())
+			< dongle->queue[0]->last_compilation - get_time_ms())
 		{
 			priority = dongle->queue[1];
 			dongle->queue[1] = dongle->queue[0];
@@ -37,14 +38,14 @@ static void	update_dongles_status(t_coder *coder)
 	pthread_mutex_lock(&coder->right_dongle->mutex_dongle);
 	coder->left_dongle->is_dispo = UNAVAILABLE;
 	coder->left_dongle->available_at_ms = (get_time_ms()
-		+ coder->simulation->config.dongle_cooldown
-		+ coder->simulation->config.time_to_compile);
+			+ coder->simulation->config.dongle_cooldown
+			+ coder->simulation->config.time_to_compile);
 	coder->left_dongle->queue[0] = coder->left_dongle->queue[1];
 	coder->left_dongle->queue[1] = NULL;
 	coder->right_dongle->is_dispo = UNAVAILABLE;
 	coder->right_dongle->available_at_ms = (get_time_ms()
-		+ coder->simulation->config.dongle_cooldown
-		+ coder->simulation->config.time_to_compile);
+			+ coder->simulation->config.dongle_cooldown
+			+ coder->simulation->config.time_to_compile);
 	coder->right_dongle->queue[0] = coder->right_dongle->queue[1];
 	coder->right_dongle->queue[1] = NULL;
 	pthread_mutex_unlock(&coder->right_dongle->mutex_dongle);
