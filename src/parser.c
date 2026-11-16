@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-t_error	parse_number(const char *str, int *value)
+static t_error	parse_number(const char *str, int *value)
 {
 	int		index;
 	int		digit;
@@ -25,7 +25,7 @@ t_error	parse_number(const char *str, int *value)
 	return (NO_ERR);
 }
 
-t_error	parse_scheduler(const char *str, t_scheduler *scheduler)
+static t_error	parse_scheduler(const char *str, t_scheduler *scheduler)
 {
 	if (str == NULL || *str == '\0' || scheduler == NULL)
 		return (INVALID_SCHEDULER_ERR);
@@ -42,7 +42,7 @@ t_error	parse_scheduler(const char *str, t_scheduler *scheduler)
 	return (INVALID_SCHEDULER_ERR);
 }
 
-t_error	validate_config(t_config *config)
+static t_error	validate_config(t_config *config)
 {
 	if (config == NULL)
 		return (INVALID_CONFIG_ERR);

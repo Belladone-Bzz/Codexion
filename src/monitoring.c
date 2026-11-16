@@ -1,23 +1,13 @@
 #include "codexion.h"
 
-void	set_simulation_state(t_simulation *simulation, t_sim_state state)
+static void	set_simulation_state(t_simulation *simulation, t_sim_state state)
 {
 	pthread_mutex_lock(&simulation->mutex_starter);
 	simulation->state = state;
 	pthread_mutex_unlock(&simulation->mutex_starter);
 }
 
-t_sim_state	check_simulation_state(t_simulation *simulation)
-{
-	t_sim_state	sim_state;
-
-	pthread_mutex_lock(&simulation->mutex_starter);
-	sim_state = simulation->state;
-	pthread_mutex_unlock(&simulation->mutex_starter);
-	return (sim_state);
-}
-
-t_sim_state	check_coders(t_simulation *simulation)
+static t_sim_state	check_coders(t_simulation *simulation)
 {
 	int	index;
 	int	coders_done;
@@ -41,6 +31,16 @@ t_sim_state	check_coders(t_simulation *simulation)
 	if (coders_done == simulation->config.number_of_coders)
 		set_simulation_state(simulation, FINISHED);
 	return (check_simulation_state(simulation));
+}
+
+t_sim_state	check_simulation_state(t_simulation *simulation)
+{
+	t_sim_state	sim_state;
+
+	pthread_mutex_lock(&simulation->mutex_starter);
+	sim_state = simulation->state;
+	pthread_mutex_unlock(&simulation->mutex_starter);
+	return (sim_state);
 }
 
 void	*monitoring(void *data)

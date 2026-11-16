@@ -110,25 +110,34 @@ typedef struct s_simulation
 	t_sim_state			state;
 }	t_simulation;
 
-t_error			parse_number(const char *str, int *value);
-t_error			parse_scheduler(const char *str, t_scheduler *scheduler);
-t_error			validate_config(t_config *config);
+//	src/coder.c
+bool			check_burnout(t_coder *coder);
+void			*coder_behavior(void *data);
+
+//	src/dongles.c
+bool			request_dongles(t_coder *coder);
+
+//	src/initialization.c
+void			free_simulation(t_simulation *simulation);
+t_error			init_simulation(t_simulation *simulation, t_config *config);
+
+//	src/monitoring.c
+void			*monitoring(void *data);
+t_sim_state		check_simulation_state(t_simulation *simulation);
+
+//	src/parser.c
 t_error			parse_args(int argc, char **argv, t_config *config);
+
+//	src/printer.c
 void			print_error(t_error error);
+void			print_status(t_coder *coder, t_coder_state state);
+
+//	src/thread.c
+t_error			join_threads(t_simulation *simulation);
+t_error			init_thread(t_simulation *simulation);
+
+//	src/time.c
 long			get_time_ms(void);
 bool			sleep_ms(long duration, t_coder *coder);
-t_error			init_simulation(t_simulation *simulation, t_config *config);
-t_error			allocate_simulation_arrays(t_simulation *simulation);
-t_error			init_dongles(t_simulation *simulation);
-t_error			init_coders(t_simulation *simulation);
-t_error			init_thread(t_simulation *simulation);
-t_error			join_threads(t_simulation *simulation);
-void			free_simulation(t_simulation *simulation);
-void			*coder_behavior(void *data);
-void			*monitoring(void *data);
-void			print_status(t_coder *coder, t_coder_state state);
-bool			check_burnout(t_coder *coder);
-t_sim_state		check_simulation_state(t_simulation *simulation);
-bool			request_dongles(t_coder *coder);
 
 #endif
