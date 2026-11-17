@@ -16,6 +16,11 @@ t_error	run_simulation(t_config *config)
 		return (error);
 	}
 	error = join_threads(&simulation);
+	if (simulation.state == FINISHED)
+		printf(RED"\nSimulation done - All coders have done their "
+			"compilations.\n");
+	if (simulation.state == BURNING)
+		printf(RED"\nSimulation burned out - A coder burned out.\n");
 	free_simulation(&simulation);
 	return (error);
 }
@@ -31,6 +36,7 @@ int	main(int argc, char **argv)
 		print_error(error);
 		return (1);
 	}
+	printf(RED"\n====== Starting simulation ======\n\n");
 	error = run_simulation(&config);
 	if (error != NO_ERR)
 	{

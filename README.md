@@ -2,6 +2,14 @@
 
 In this project, I orchestrate multiple coders competing for limited USB dongles using POSIX threads, mutexes, and smart scheduling.
 
+**This project allowed me to greatly improve the following skills:**
+- Command-line argument parsing
+- Resources management & starvation prevention
+- Scheduling
+- System design trade-off analysis
+- Synchronization primitives
+- Multithreading
+
 ## Instructions
 
 ## Resources

@@ -15,6 +15,7 @@
 # define YELLOW "\033[38;5;3m"
 # define BLUE "\033[38;5;4m"
 # define GREEN "\033[38;5;48m"
+# define RED "\033[38;5;1m"
 
 typedef enum e_error
 {
