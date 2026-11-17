@@ -19,10 +19,9 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(INC) -c $^ -o $@
 
 clean:
-	make fclean
 	rm -f $(OBJ)
 
-fclean:
+fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
