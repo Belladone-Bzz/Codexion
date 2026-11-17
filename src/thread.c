@@ -18,7 +18,8 @@ t_error	init_thread(t_simulation *simulation)
 		simulation->thread_created ++;
 		index ++;
 	}
-	usleep(10000);
+	usleep(1000);
+	simulation->simulation_start = get_time_ms();
 	pthread_cond_broadcast(&simulation->start_condition);
 	return (NO_ERR);
 }

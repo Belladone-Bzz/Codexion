@@ -21,16 +21,20 @@ bool	check_burnout(t_coder *coder)
 
 static void	queue_attribution(t_coder *coder)
 {
+	pthread_mutex_lock(&coder->left_dongle->mutex_dongle);
 	if (coder->left_dongle->queue[0] == NULL
 		|| coder->left_dongle->queue[0] == coder)
 		coder->left_dongle->queue[0] = coder;
 	else
 		coder->left_dongle->queue[1] = coder;
+	pthread_mutex_unlock(&coder->left_dongle->mutex_dongle);
+	pthread_mutex_lock(&coder->right_dongle->mutex_dongle);
 	if (coder->right_dongle->queue[0] == NULL
 		|| coder->right_dongle->queue[0] == coder)
 		coder->right_dongle->queue[0] = coder;
 	else
 		coder->right_dongle->queue[1] = coder;
+	pthread_mutex_unlock(&coder->right_dongle->mutex_dongle);
 }
 
 static int	coder_processing(t_coder *coder)
@@ -68,15 +72,15 @@ void	*coder_behavior(void *data)
 	pthread_cond_wait(&simulation->start_condition, &simulation->mutex_starter);
 	pthread_mutex_unlock(&simulation->mutex_starter);
 	coder->last_compilation = get_time_ms();
-	if (simulation->config.number_of_coders == 1)
-		return (NULL);
 	if (coder->id % 2 == 0)
 		usleep(100);
 	while (coder->compilations_done < simulation->config.compiles_required
 		&& check_simulation_state(simulation) == RUNNING
 		&& check_burnout(coder) == false)
-		if (coder_processing(coder) != 0)
+		if (simulation->config.number_of_coders != 1
+			&& coder_processing(coder) != 0)
 			return (NULL);
-	set_state(coder, DONE);
+	if (coder->compilations_done == simulation->config.compiles_required)
+		set_state(coder, DONE);
 	return (NULL);
 }

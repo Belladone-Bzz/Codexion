@@ -8,7 +8,6 @@ t_error	run_simulation(t_config *config)
 	error = init_simulation(&simulation, config);
 	if (error != NO_ERR)
 		return (error);
-	simulation.simulation_start = get_time_ms();
 	error = init_thread(&simulation);
 	if (error != NO_ERR)
 	{

@@ -16,17 +16,17 @@ static t_sim_state	check_coders(t_simulation *simulation)
 	coders_done = 0;
 	while (index < simulation->config.number_of_coders)
 	{
-		pthread_mutex_lock(&simulation->coders->mutex_coder);
+		pthread_mutex_lock(&simulation->coders[index].mutex_coder);
 		if (simulation->coders[index].state == BURNOUT)
 		{
 			set_simulation_state(simulation, BURNING);
-			pthread_mutex_unlock(&simulation->coders->mutex_coder);
+			pthread_mutex_unlock(&simulation->coders[index].mutex_coder);
 			break ;
 		}
 		if (simulation->coders[index].state == DONE)
 			coders_done ++;
+		pthread_mutex_unlock(&simulation->coders[index].mutex_coder);
 		index ++;
-		pthread_mutex_unlock(&simulation->coders->mutex_coder);
 	}
 	if (coders_done == simulation->config.number_of_coders)
 		set_simulation_state(simulation, FINISHED);
