@@ -71,7 +71,7 @@ void	*coder_behavior(void *data)
 	if (simulation->config.number_of_coders == 1)
 		return (NULL);
 	if (coder->id % 2 == 0)
-		usleep(200);
+		usleep(100);
 	while (coder->compilations_done < simulation->config.compiles_required
 		&& check_simulation_state(simulation) == RUNNING
 		&& check_burnout(coder) == false)

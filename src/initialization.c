@@ -14,6 +14,8 @@ static t_error	init_dongles(t_simulation *simulation)
 		if (pthread_mutex_init(
 				&simulation->dongles[index].mutex_dongle, NULL) != 0)
 			return (MUTEX_INIT_ERR);
+		simulation->dongles[index].queue[0] = NULL;
+		simulation->dongles[index].queue[1] = NULL;
 		index ++;
 	}
 	return (NO_ERR);
