@@ -21,8 +21,8 @@ bool	sleep_ms(long duration, t_coder *coder)
 		if (coder->simulation->state != RUNNING
 			|| check_burnout(coder) == true)
 			return (false);
-		usleep(100);
-		duration_us -= 100;
+		usleep(1000);
+		duration_us -= 1000;
 	}
 	return (true);
 }
