@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-static void	set_simulation_state(t_simulation *simulation, t_sim_state state)
+void	set_simulation_state(t_simulation *simulation, t_sim_state state)
 {
 	pthread_mutex_lock(&simulation->mutex_starter);
 	simulation->state = state;
@@ -17,12 +17,6 @@ static t_sim_state	check_coders(t_simulation *simulation)
 	while (index < simulation->config.number_of_coders)
 	{
 		pthread_mutex_lock(&simulation->coders[index].mutex_coder);
-		if (simulation->coders[index].state == BURNOUT)
-		{
-			set_simulation_state(simulation, BURNING);
-			pthread_mutex_unlock(&simulation->coders[index].mutex_coder);
-			break ;
-		}
 		if (simulation->coders[index].state == DONE)
 			coders_done ++;
 		pthread_mutex_unlock(&simulation->coders[index].mutex_coder);
@@ -50,10 +44,10 @@ void	*monitoring(void *data)
 
 	coder = (t_coder *)data;
 	simulation = coder->simulation;
-	pthread_mutex_lock(&simulation->mutex_starter);
-	pthread_cond_wait(&simulation->start_condition,
-		&simulation->mutex_starter);
-	pthread_mutex_unlock(&simulation->mutex_starter);
+	// pthread_mutex_lock(&simulation->mutex_starter);
+	// pthread_cond_wait(&simulation->start_condition,
+	// 	&simulation->mutex_starter);
+	// pthread_mutex_unlock(&simulation->mutex_starter);
 	while (check_coders(simulation) == RUNNING)
 		continue ;
 	return (NULL);

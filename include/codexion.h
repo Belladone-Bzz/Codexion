@@ -46,6 +46,7 @@ typedef enum e_scheduler
 typedef enum e_coder_state
 {
 	WAITING,
+	TAKING_DONGLE,
 	COMPILING,
 	DEBUGGING,
 	REFACTORING,
@@ -125,6 +126,7 @@ t_error			init_simulation(t_simulation *simulation, t_config *config);
 //	src/monitoring.c
 void			*monitoring(void *data);
 t_sim_state		check_simulation_state(t_simulation *simulation);
+void			set_simulation_state(t_simulation *simulation, t_sim_state state);
 
 //	src/parser.c
 t_error			parse_args(int argc, char **argv, t_config *config);

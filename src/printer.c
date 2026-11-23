@@ -9,8 +9,15 @@ void	print_status(t_coder *coder, t_coder_state state)
 		return ;
 	simulation = coder->simulation;
 	pthread_mutex_lock(&simulation->mutex_printer);
+	if (check_simulation_state(simulation) != RUNNING)
+	{
+		pthread_mutex_unlock(&simulation->mutex_printer);
+		return ;
+	}
 	elapsed_time = get_time_ms() - simulation->simulation_start;
 	printf(YELLOW"%ld "BLUE"%d ", elapsed_time, coder->id);
+	if (state == TAKING_DONGLE)
+		printf(GREEN"has taken a dongle\n");
 	if (state == COMPILING)
 		printf(GREEN"is compiling\n");
 	else if (state == DEBUGGING)
