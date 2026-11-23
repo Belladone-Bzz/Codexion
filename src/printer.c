@@ -5,8 +5,6 @@ void	print_status(t_coder *coder, t_coder_state state)
 	long			elapsed_time;
 	t_simulation	*simulation;
 
-	if (state == WAITING)
-		return ;
 	simulation = coder->simulation;
 	pthread_mutex_lock(&simulation->mutex_printer);
 	if (check_simulation_state(simulation) != RUNNING)
@@ -41,7 +39,7 @@ void	print_error(t_error error)
 		fprintf(stderr, "Error: scheduler must be <fifo> or <edf>.\n");
 	else if (error == INVALID_CONFIG_ERR)
 		fprintf(stderr, "Error: invalid configuration. number_of_coders"
-			" must be between 1 and 10000, and timing and compilation arguments"
+			" must be between 1 and 200, and timing and compilation arguments"
 			" must be >= 0.\n");
 	else if (error == INVALID_ARGS_NUMBER)
 		fprintf(stderr, "Error: invalid argument count.\n");

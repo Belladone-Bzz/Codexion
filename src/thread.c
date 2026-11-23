@@ -9,7 +9,7 @@ t_error	init_thread(t_simulation *simulation)
 	nb_max = simulation->config.number_of_coders;
 	if (pthread_create(&simulation->monitoring,
 			NULL, monitoring, simulation->coders) != 0)
-			return (THREAD_ERR);
+		return (THREAD_ERR);
 	simulation->simulation_start = get_time_ms();
 	while (index < nb_max)
 	{
