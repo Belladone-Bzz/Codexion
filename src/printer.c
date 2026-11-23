@@ -18,7 +18,7 @@ void	print_status(t_coder *coder, t_coder_state state)
 	printf(YELLOW"%ld "BLUE"%d ", elapsed_time, coder->id);
 	if (state == TAKING_DONGLE)
 		printf(GREEN"has taken a dongle\n");
-	if (state == COMPILING)
+	else if (state == COMPILING)
 		printf(GREEN"is compiling\n");
 	else if (state == DEBUGGING)
 		printf(GREEN"is debugging\n");

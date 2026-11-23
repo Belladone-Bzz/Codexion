@@ -44,10 +44,6 @@ void	*monitoring(void *data)
 
 	coder = (t_coder *)data;
 	simulation = coder->simulation;
-	// pthread_mutex_lock(&simulation->mutex_starter);
-	// pthread_cond_wait(&simulation->start_condition,
-	// 	&simulation->mutex_starter);
-	// pthread_mutex_unlock(&simulation->mutex_starter);
 	while (check_coders(simulation) == RUNNING)
 		continue ;
 	return (NULL);
