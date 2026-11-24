@@ -72,8 +72,6 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 		return (MUTEX_INIT_ERR);
 	if (pthread_mutex_init(&simulation->mutex_starter, NULL) != 0)
 		return (MUTEX_INIT_ERR);
-	if (pthread_cond_init(&simulation->start_condition, NULL) != 0)
-		return (COND_INIT_ERR);
 	if (allocate_simulation_arrays(simulation) != NO_ERR)
 	{
 		free_simulation(simulation);

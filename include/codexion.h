@@ -106,7 +106,6 @@ typedef struct s_simulation
 	pthread_t			monitoring;
 	pthread_mutex_t		mutex_printer;
 	pthread_mutex_t		mutex_starter;
-	pthread_cond_t		start_condition;
 	long				simulation_start;
 	int					thread_created;
 	t_sim_state			state;
