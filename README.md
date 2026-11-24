@@ -119,3 +119,13 @@ Coders and the monitoring thread share simulation data through the simulation st
 
 
 # Resources
+
+- Peer learning. BIG thanks to Jolyne, Luka, Ady <3
+- [Project comprehension](https://dev.to/yel-bakk/thread-in-c-codexion-42-1ao)
+- [Programmation concurrente](https://www.codequoi.com/threads-mutex-et-programmation-concurrente-en-c/)
+- [Librairie threads](https://koor.fr/C/cthreads/Index.wp)
+- [Mutexes](https://medium.com/@sherniiazov.da/mutexes-in-c-ac2b0f1a6d34)
+- [Valgrind - Helgrind](https://valgrind.org/docs/manual/hg-manual.html)
+
+## AI usage
+No AI was use during this project.
