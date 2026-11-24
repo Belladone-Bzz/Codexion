@@ -21,7 +21,7 @@ valgrind: all
 	valgrind --leak-check=full --show-leak-kinds=all ./codexion 5 100 20 20 10 5 10 edf
 
 helgrind: all
-	valgrind --tool=helgrind ./codexion 5 100 20 20 10 5 10 edf
+	valgrind --tool=helgrind --fair-sched=yes -s ./codexion 5 100 20 20 10 5 10 edf
 
 clean:
 	rm -f $(OBJ)

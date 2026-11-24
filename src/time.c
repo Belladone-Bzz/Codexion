@@ -18,7 +18,7 @@ bool	sleep_ms(long duration, t_coder *coder)
 	end_time = get_time_ms() + duration;
 	while (get_time_ms() < end_time)
 	{
-		if (coder->simulation->state != RUNNING
+		if (check_simulation_state(coder->simulation) != RUNNING
 			|| check_burnout(coder) == true)
 			return (false);
 	}

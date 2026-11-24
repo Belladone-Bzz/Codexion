@@ -10,7 +10,12 @@ static void	set_state(t_coder *coder, t_coder_state state)
 
 bool	check_burnout(t_coder *coder)
 {
-	if (get_time_ms() - coder->last_compilation
+	long	last_compilation;
+
+	pthread_mutex_lock(&coder->mutex_coder);
+	last_compilation = coder->last_compilation;
+	pthread_mutex_unlock(&coder->mutex_coder);
+	if (get_time_ms() - last_compilation
 		>= coder->simulation->config.time_to_burnout)
 	{
 		set_state(coder, BURNOUT);
@@ -51,7 +56,9 @@ static int	coder_processing(t_coder *coder)
 	set_state(coder, TAKING_DONGLE);
 	set_state(coder, TAKING_DONGLE);
 	set_state(coder, COMPILING);
+	pthread_mutex_lock(&coder->mutex_coder);
 	coder->last_compilation = get_time_ms();
+	pthread_mutex_unlock(&coder->mutex_coder);
 	if (sleep_ms(simulation->config.time_to_compile, coder) == false)
 		return (1);
 	coder->compilations_done++;
@@ -71,7 +78,9 @@ void	*coder_behavior(void *data)
 
 	coder = (t_coder *)data;
 	simulation = coder->simulation;
+	pthread_mutex_lock(&coder->mutex_coder);
 	coder->last_compilation = get_time_ms();
+	pthread_mutex_unlock(&coder->mutex_coder);
 	if (coder->id % 2 == 0)
 		usleep(100);
 	while (coder->compilations_done < simulation->config.compiles_required
