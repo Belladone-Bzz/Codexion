@@ -21,13 +21,11 @@ static t_error	init_dongles(t_simulation *simulation)
 	return (NO_ERR);
 }
 
-static t_error	init_coders(t_simulation *simulation)
+static t_error	init_coders(t_simulation *simulation, int nb_max)
 {
 	int		index;
-	int		nb_max;
 
 	index = 0;
-	nb_max = simulation->config.number_of_coders;
 	while (index < nb_max)
 	{
 		simulation->coders[index].id = index + 1;
@@ -37,6 +35,12 @@ static t_error	init_coders(t_simulation *simulation)
 		simulation->coders[index].right_dongle = &simulation->dongles[index];
 		simulation->coders[index].left_dongle = &simulation->dongles[(
 				index + nb_max - 1) % nb_max];
+		if (index == nb_max - 1)
+		{
+			simulation->coders[index].left_dongle = &simulation->dongles[index];
+			simulation->coders[index].right_dongle = &simulation->dongles[(
+					index + nb_max - 1) % nb_max];
+		}
 		simulation->coders[index].simulation = simulation;
 		if (pthread_mutex_init(
 				&simulation->coders[index].mutex_coder, NULL) != 0)
@@ -78,7 +82,8 @@ t_error	init_simulation(t_simulation *simulation, t_config *config)
 		return (MALLOC_ERR);
 	}
 	if (init_dongles(simulation) != NO_ERR
-		|| init_coders(simulation) != NO_ERR)
+		|| init_coders(simulation, simulation->config.number_of_coders)
+		!= NO_ERR)
 	{
 		free_simulation(simulation);
 		return (MUTEX_INIT_ERR);
